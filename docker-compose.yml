@@ -1,0 +1,50 @@
+version: '2'
+services:
+  media:
+    image: busybox
+    volumes:
+        - ./media:/application/media
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    volumes_from:
+        - media
+    volumes:
+      - .:/application
+    environment:
+      IN_DOCKER: 1
+      DB_NAME: docker
+      DB_USER: docker
+      DB_PASSWORD: docker
+      DB_HOST: db
+    command: python3 manage.py runserver 0.0.0.0:8080
+    mem_limit: 256m
+    memswap_limit: 256m
+    links:
+      - db
+    networks:
+      - cloud-back-tier
+  db:
+    image: postgres:alpine
+    mem_limit: 512m
+    memswap_limit: 512m
+    volumes:
+      - dbdata:/var/lib/postgresql
+    environment:
+      - POSTGRES_DB=docker
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+    ports:
+      - "5432"
+    networks:
+        - cloud-back-tier
+volumes:
+  data: {}
+  media:
+    external: true
+  dbdata:
+    external: true
+networks:
+  cloud-back-tier:
+    driver: bridge
