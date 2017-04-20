@@ -5,4 +5,4 @@ RUN apk add --no-cache g++ make python3-dev jpeg-dev zlib-dev libffi-dev postgre
 COPY . /application
 WORKDIR /application
 
-RUN pip3 install -r requirements.txt
+RUN pip install -r requirements.txt
