@@ -18,29 +18,12 @@ services:
       DB_USER: docker
       DB_PASSWORD: docker
       DB_HOST: db
+    entrypoint: ./docker-entrypoint.sh
     command: python manage.py runserver 0.0.0.0:8000
     mem_limit: 256m
     memswap_limit: 256m
     depends_on:
       - db
-      - migration
-    networks:
-      - cloud-back-tier
-  migration:
-    build: ./backend
-    command: python manage.py migrate
-    volumes:
-      - ./backend:/application
-    links:
-      - db
-    depends_on:
-      - db
-    environment:
-      IN_DOCKER: 1
-      DB_NAME: docker
-      DB_USER: docker
-      DB_PASSWORD: docker
-      DB_HOST: db
     networks:
       - cloud-back-tier
   frontend:
